@@ -1,19 +1,25 @@
 package com.semarslan.grpcDemo.client;
 
 
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.semarslan.models.Balance;
 import com.semarslan.models.BalanceCheckRequest;
 import com.semarslan.models.BankServiceGrpc;
+import com.semarslan.models.WithdrawRequest;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BankClientTest {
 
     private BankServiceGrpc.BankServiceBlockingStub blockingStub;
+    private BankServiceGrpc.BankServiceStub bankServiceStub;
 
     @BeforeAll
     public void setup() {
@@ -22,6 +28,7 @@ public class BankClientTest {
                 .build();
 
         this.blockingStub = BankServiceGrpc.newBlockingStub(channel);
+        this.bankServiceStub = BankServiceGrpc.newStub(channel);
     }
 
     @Test
@@ -36,5 +43,25 @@ public class BankClientTest {
         System.out.println(
                 "Received: " + balance.getAmount()
         );
+    }
+
+    @Test
+    public void withDrawTest(){
+        WithdrawRequest request = WithdrawRequest.newBuilder()
+                .setAccountNum(7).setAmount(40).build();
+        this.blockingStub.withdraw(request).forEachRemaining(money -> System.out.println(
+                "Received: " + money.getValue()
+        ));
+    }
+
+    @Test
+    public void withDrawAsyncTest() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        WithdrawRequest request = WithdrawRequest.newBuilder()
+                .setAccountNum(10).setAmount(50).build();
+        this.bankServiceStub.withdraw(request, new MoneyStreamingResponse(latch));
+        latch.await();
+
     }
 }

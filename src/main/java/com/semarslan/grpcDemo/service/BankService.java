@@ -1,20 +1,13 @@
 package com.semarslan.grpcDemo.service;
 
-import com.semarslan.grpcDemo.data.AccountDatabase;
 import com.semarslan.models.Balance;
 import com.semarslan.models.BalanceCheckRequest;
-import com.semarslan.models.BankServiceGrpc;
+import com.semarslan.models.Money;
+import com.semarslan.models.WithdrawRequest;
 import io.grpc.stub.StreamObserver;
 
-public class BankService extends BankServiceGrpc.BankServiceImplBase {
-    @Override
-    public void getBalance(BalanceCheckRequest request, StreamObserver<Balance> responseObserver) {
+public interface BankService {
+    public void getBalance(BalanceCheckRequest request, StreamObserver<Balance> responseObserver);
 
-        int accountNumber = request.getAccountNum();
-        Balance balance = Balance.newBuilder()
-                .setAmount(AccountDatabase.getBalance(accountNumber)).build();
-
-        responseObserver.onNext(balance);
-        responseObserver.onCompleted();
-    }
+    public void withdraw(WithdrawRequest request, StreamObserver<Money> responseObserver);
 }
