@@ -1,4 +1,4 @@
-package com.semarslan.grpcDemo.client;
+package com.semarslan.grpcDemo.response;
 
 import com.semarslan.models.Balance;
 import io.grpc.stub.StreamObserver;

@@ -7,12 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class GrpcDemoApplication {
 
 
-	static GrpcServer grpcServer;
 	public static void main(String[] args) {
 //		SpringApplication.run(GrpcDemoApplication.class, args);
 
 		try {
-			grpcServer.grpcServer();
+			GrpcServer.grpcServer();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

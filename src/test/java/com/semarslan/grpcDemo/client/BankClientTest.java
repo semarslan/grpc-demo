@@ -1,7 +1,8 @@
 package com.semarslan.grpcDemo.client;
 
 
-import com.google.common.util.concurrent.Uninterruptibles;
+import com.semarslan.grpcDemo.response.BalanceStreamObserver;
+import com.semarslan.grpcDemo.response.MoneyStreamingResponse;
 import com.semarslan.models.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BankClientTest {
