@@ -1,7 +1,7 @@
 package com.semarslan.grpcDemo.service.impl;
 
 import com.semarslan.grpcDemo.data.AccountDatabase;
-import com.semarslan.grpcDemo.service.BankService;
+import com.semarslan.grpcDemo.request.CashStreamingRequest;
 import com.semarslan.models.*;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class BankServiceImpl extends BankServiceGrpc.BankServiceImplBase implements BankService{
+public class BankServiceImpl extends BankServiceGrpc.BankServiceImplBase{
     @Override
     public void getBalance(BalanceCheckRequest request, StreamObserver<Balance> responseObserver) {
 
@@ -42,5 +42,10 @@ public class BankServiceImpl extends BankServiceGrpc.BankServiceImplBase impleme
         }
 
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public StreamObserver<DepositRequest> cashDeposit(StreamObserver<Balance> responseObserver) {
+        return new CashStreamingRequest(responseObserver);
     }
 }

@@ -2,12 +2,10 @@ package com.semarslan.grpcDemo.client;
 
 
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.semarslan.models.Balance;
-import com.semarslan.models.BalanceCheckRequest;
-import com.semarslan.models.BankServiceGrpc;
-import com.semarslan.models.WithdrawRequest;
+import com.semarslan.models.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.StreamObserver;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -63,5 +61,19 @@ public class BankClientTest {
         this.bankServiceStub.withdraw(request, new MoneyStreamingResponse(latch));
         latch.await();
 
+    }
+
+    @Test
+    public void cashStreamingRequest() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        StreamObserver<DepositRequest> streamObserver = this.bankServiceStub.cashDeposit(new BalanceStreamObserver(latch));
+        for (int i = 0; i < 10; i++) {
+            DepositRequest request = DepositRequest.newBuilder().setAccountNum(8).setAmount(10).build();
+            streamObserver.onNext(request);
+        }
+
+        streamObserver.onCompleted();
+        latch.await();
     }
 }
